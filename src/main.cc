@@ -3,6 +3,7 @@
 #include <getopt.h>
 #include "ooo_cpu.h"
 #include "uncore.h"
+#include "DRAMSim.h"
 
 uint8_t warmup_complete[NUM_CPUS], 
         simulation_complete[NUM_CPUS], 
@@ -115,6 +116,9 @@ void print_dram_stats()
     for (uint32_t i=0; i<DRAM_CHANNELS; i++)
         total_congested_cycle += uncore.DRAM.dbus_cycle_congested[i];
     cout << " AVG_CONGESTED_CYCLE: " << (total_congested_cycle / uncore.DRAM.dbus_congested[NUM_TYPES][NUM_TYPES]) << endl;
+
+    cout << "DRAMSim2 Statistics" << endl;
+    uncore.mem->printStats(true);
 }
 
 void reset_cache_stats(uint32_t cpu, CACHE *cache)
@@ -528,9 +532,9 @@ int main(int argc, char** argv)
         DRAM_MTPS = 1600;
 
     // DRAM access latency
-    tRP  = tRP_DRAM_CYCLE  * (CPU_FREQ / DRAM_IO_FREQ); 
-    tRCD = tRCD_DRAM_CYCLE * (CPU_FREQ / DRAM_IO_FREQ); 
-    tCAS = tCAS_DRAM_CYCLE * (CPU_FREQ / DRAM_IO_FREQ); 
+    tRP_t  = tRP_DRAM_CYCLE  * (CPU_FREQ / DRAM_IO_FREQ);
+    tRCD_t = tRCD_DRAM_CYCLE * (CPU_FREQ / DRAM_IO_FREQ);
+    tCAS = tCAS_DRAM_CYCLE * (CPU_FREQ / DRAM_IO_FREQ);
 
     // default: 16 = (64 / 8) * (3200 / 1600)
     // it takes 16 CPU cycles to tranfser 64B cache block on a 8B (64-bit) bus 
@@ -671,6 +675,7 @@ int main(int argc, char** argv)
         uncore.LLC.upper_level_icache[i] = &ooo_cpu[i].L2C;
         uncore.LLC.upper_level_dcache[i] = &ooo_cpu[i].L2C;
         uncore.LLC.lower_level = &uncore.DRAM;
+        uncore.LLC.lower_dram = uncore.mem;
 
         // OFF-CHIP DRAM
         uncore.DRAM.fill_level = FILL_DRAM;
@@ -817,6 +822,7 @@ int main(int argc, char** argv)
         // TODO: should it be backward?
         uncore.LLC.operate();
         uncore.DRAM.operate();
+        uncore.mem->update();
     }
 
 #ifndef CRC2_COMPILE
