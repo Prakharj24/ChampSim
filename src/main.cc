@@ -101,6 +101,7 @@ void print_branch_stats()
 
 void print_dram_stats()
 {
+    /*
     cout << endl;
     cout << "DRAM Statistics" << endl;
     for (uint32_t i=0; i<DRAM_CHANNELS; i++) {
@@ -118,7 +119,7 @@ void print_dram_stats()
     cout << " AVG_CONGESTED_CYCLE: " << (total_congested_cycle / uncore.DRAM.dbus_congested[NUM_TYPES][NUM_TYPES]) << endl;
 
     cout << "DRAMSim2 Statistics" << endl;
-    uncore.mem->printStats(true);
+    */
 }
 
 void reset_cache_stats(uint32_t cpu, CACHE *cache)
@@ -180,12 +181,12 @@ void finish_warmup()
     cout << endl;
 
     // reset DRAM stats
-    for (uint32_t i=0; i<DRAM_CHANNELS; i++) {
+    /*for (uint32_t i=0; i<DRAM_CHANNELS; i++) {
         uncore.DRAM.RQ[i].ROW_BUFFER_HIT = 0;
         uncore.DRAM.RQ[i].ROW_BUFFER_MISS = 0;
         uncore.DRAM.WQ[i].ROW_BUFFER_HIT = 0;
         uncore.DRAM.WQ[i].ROW_BUFFER_MISS = 0;
-    }
+    }*/
 
     // set actual cache latency
     for (uint32_t i=0; i<NUM_CPUS; i++) {
@@ -526,6 +527,7 @@ int main(int argc, char** argv)
     cout << "LLC sets: " << LLC_SET << endl;
     cout << "LLC ways: " << LLC_WAY << endl;
 
+    /*
     if (knob_low_bandwidth)
         DRAM_MTPS = 400;
     else
@@ -543,6 +545,7 @@ int main(int argc, char** argv)
 
     printf("Off-chip DRAM Size: %u MB Channels: %u Width: %u-bit Data Rate: %u MT/s\n",
             DRAM_SIZE, DRAM_CHANNELS, 8*DRAM_CHANNEL_WIDTH, DRAM_MTPS);
+    */
 
     // end consequence of knobs
 
@@ -675,16 +678,12 @@ int main(int argc, char** argv)
         uncore.LLC.upper_level_icache[i] = &ooo_cpu[i].L2C;
         uncore.LLC.upper_level_dcache[i] = &ooo_cpu[i].L2C;
         uncore.LLC.lower_level = &uncore.DRAM;
-        uncore.LLC.lower_dram = uncore.mem;
 
         // OFF-CHIP DRAM
-        uncore.DRAM.fill_level = FILL_DRAM;
         uncore.DRAM.upper_level_icache[i] = &uncore.LLC;
         uncore.DRAM.upper_level_dcache[i] = &uncore.LLC;
-        for (uint32_t i=0; i<DRAM_CHANNELS; i++) {
-            uncore.DRAM.RQ[i].is_RQ = 1;
-            uncore.DRAM.WQ[i].is_WQ = 1;
-        }
+        uncore.DRAM.RQ.is_RQ = 1;
+        uncore.DRAM.WQ.is_WQ = 1;
 
         warmup_complete[i] = 0;
         //all_warmup_complete = NUM_CPUS;
@@ -821,8 +820,8 @@ int main(int argc, char** argv)
 
         // TODO: should it be backward?
         uncore.LLC.operate();
+        if (current_core_cycle[0] % 5 == 0)
         uncore.DRAM.operate();
-        uncore.mem->update();
     }
 
 #ifndef CRC2_COMPILE
