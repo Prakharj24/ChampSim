@@ -400,6 +400,7 @@ void O3_CPU::fetch_instruction()
         else
             trace_packet.address = ROB.entry[read_index].ip >> LOG2_PAGE_SIZE;
         trace_packet.full_addr = ROB.entry[read_index].ip;
+        trace_packet.virtual_address = ROB.entry[read_index].ip;
         trace_packet.instr_id = ROB.entry[read_index].instr_id;
         trace_packet.rob_index = read_index;
         trace_packet.producer = 0; // TODO: check if this guy gets used or not
@@ -458,6 +459,7 @@ void O3_CPU::fetch_instruction()
         fetch_packet.address = ROB.entry[fetch_index].instruction_pa >> 6;
         fetch_packet.instruction_pa = ROB.entry[fetch_index].instruction_pa;
         fetch_packet.full_addr = ROB.entry[fetch_index].instruction_pa;
+        fetch_packet.virtual_address = ROB.entry[fetch_index].instruction_pa;
         fetch_packet.instr_id = ROB.entry[fetch_index].instr_id;
         fetch_packet.rob_index = fetch_index;
         fetch_packet.producer = 0;
@@ -1123,6 +1125,7 @@ void O3_CPU::operate_lsq()
                 else
                     data_packet.address = SQ.entry[sq_index].virtual_address >> LOG2_PAGE_SIZE;
                 data_packet.full_addr = SQ.entry[sq_index].virtual_address;
+                data_packet.virtual_address = SQ.entry[sq_index].virtual_address;
                 data_packet.instr_id = SQ.entry[sq_index].instr_id;
                 data_packet.rob_index = SQ.entry[sq_index].rob_index;
                 data_packet.ip = SQ.entry[sq_index].ip;
@@ -1205,6 +1208,7 @@ void O3_CPU::operate_lsq()
                 else
                     data_packet.address = LQ.entry[lq_index].virtual_address >> LOG2_PAGE_SIZE;
                 data_packet.full_addr = LQ.entry[lq_index].virtual_address;
+                data_packet.virtual_address = LQ.entry[lq_index].virtual_address;
                 data_packet.instr_id = LQ.entry[lq_index].instr_id;
                 data_packet.rob_index = LQ.entry[lq_index].rob_index;
                 data_packet.ip = LQ.entry[lq_index].ip;
@@ -1360,6 +1364,7 @@ int O3_CPU::execute_load(uint32_t rob_index, uint32_t lq_index, uint32_t data_in
     data_packet.data_index = LQ.entry[lq_index].data_index;
     data_packet.lq_index = lq_index;
     data_packet.address = LQ.entry[lq_index].physical_address >> LOG2_BLOCK_SIZE;
+    data_packet.virtual_address = LQ.entry[lq_index].virtual_address;
     data_packet.full_addr = LQ.entry[lq_index].physical_address;
     data_packet.instr_id = LQ.entry[lq_index].instr_id;
     data_packet.rob_index = LQ.entry[lq_index].rob_index;
@@ -1874,6 +1879,7 @@ void O3_CPU::retire_rob()
                         data_packet.data_index = SQ.entry[sq_index].data_index;
                         data_packet.sq_index = sq_index;
                         data_packet.address = SQ.entry[sq_index].physical_address >> LOG2_BLOCK_SIZE;
+                        data_packet.virtual_address = SQ.entry[sq_index].virtual_address;
                         data_packet.full_addr = SQ.entry[sq_index].physical_address;
                         data_packet.instr_id = SQ.entry[sq_index].instr_id;
                         data_packet.rob_index = SQ.entry[sq_index].rob_index;
