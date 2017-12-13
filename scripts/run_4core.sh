@@ -1,4 +1,5 @@
 TRACE_DIR=/your/trace/directory/
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/DRAMSim2/
 binary=${1}
 n_warm=${2}
 n_sim=${3}
