@@ -1,0 +1,5 @@
+traces/*
+results_10M/results_10M/*
+results_4core/*
+bin/*
+obj/*

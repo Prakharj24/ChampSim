@@ -68,7 +68,8 @@ int DRAM_CONTROLLER::add_rq(PACKET *packet)
     }
 
     //Call DRAMSim2
-    mem->addTransaction(false, packet->address);
+    mem->addTransaction(false, packet->address, packet->cpu);
+    
     return index;
 }
 
@@ -90,7 +91,8 @@ int DRAM_CONTROLLER::add_wq(PACKET *packet)
     }
 
     //Call DRAMSim2
-    mem->addTransaction(true, packet->address);
+    mem->addTransaction(true, packet->address, packet->cpu);
+    
     return index;
 }
 

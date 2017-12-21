@@ -93,7 +93,7 @@ void CACHE::handle_fill()
 
                     lower_level->add_wq(&writeback_packet);
                     if (lower_dram != NULL)
-                        lower_dram->addTransaction(true, writeback_packet.full_addr);
+                        lower_dram->addTransaction(true, writeback_packet.full_addr, writeback_packet.cpu);
                 }
             }
 #ifdef SANITY_CHECK
@@ -246,7 +246,7 @@ void CACHE::handle_writeback()
                     //if (lower_level) // L1D always has a lower level cache
                         lower_level->add_rq(&WQ.entry[index]);
                         if (lower_dram != NULL)
-                            lower_dram->addTransaction(false, WQ.entry[index].full_addr);
+                            lower_dram->addTransaction(false, WQ.entry[index].full_addr, WQ.entry[index].cpu);
                 }
                 else {
                     if ((mshr_index == -1) && (MSHR.occupancy == MSHR_SIZE)) { // not enough MSHR resource

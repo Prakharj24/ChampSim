@@ -1,0 +1,1 @@
+./run_champsim.sh: line 9: ./bin/bimodal-no-no-lru-1core: No such file or directory
