@@ -99,3 +99,6 @@ gromacs_1B mcf_46B milc_360B omnetpp_340B
 gromacs_1B libquantum_1210B mcf_46B xalancbmk_748B
 astar_163B bwaves_1861B gromacs_1B mcf_46B
 astar_163B bzip2_183B calculix_2655B gcc_13B
+astar_163B mcf_46B omnetpp_340B gcc_13B
+astar_163B bzip2_183B calculix_2655B gcc_13B
+astar_163B mcf_46B omnetpp_340B gcc_13B
