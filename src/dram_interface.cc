@@ -10,6 +10,7 @@ void DRAM_CONTROLLER::read_complete(unsigned id, uint64_t address, uint64_t cloc
         abort();
 
     uint32_t op_cpu = RQ.entry[index].cpu;
+    cout << "packet returned!" << endl;
     upper_level_dcache[op_cpu]->return_data(&RQ.entry[index]);
     RQ.remove_queue(&RQ.entry[index]);
 

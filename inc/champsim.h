@@ -54,7 +54,7 @@
 #define FILL_DRAM 16
 
 // DRAM
-#define DRAM_SIZE 4096
+#define DRAM_SIZE 16*1024 
 #define DRAM_PAGES ((DRAM_SIZE<<10)>>2) 
 
 using namespace std;

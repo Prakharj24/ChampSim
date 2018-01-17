@@ -16,7 +16,7 @@ class DRAM_CONTROLLER : public MEMORY {
     PACKET_QUEUE WQ, RQ;
 
     DRAM_CONTROLLER(string v1) : NAME (v1) {
-        mem = DRAMSim::getMemorySystemInstance("ini/DDR3_micron_32M_8B_x4_sg125.ini", "system.ini", "./DRAMSim2", "example_app", DRAM_SIZE);
+        mem = DRAMSim::getMemorySystemInstance("ini/DDR3_micron_32M_8B_x8_sg15.ini", "system.ini", "./DRAMSim2", "example_app", DRAM_SIZE);
 
         DRAMSim::TransactionCompleteCB *read_cb = new DRAMSim::Callback<DRAM_CONTROLLER, void, unsigned, uint64_t, uint64_t>(this, &DRAM_CONTROLLER::read_complete);
         DRAMSim::TransactionCompleteCB *write_cb = new DRAMSim::Callback<DRAM_CONTROLLER, void, unsigned, uint64_t, uint64_t>(this, &DRAM_CONTROLLER::write_complete);
