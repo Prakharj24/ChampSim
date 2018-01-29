@@ -104,7 +104,6 @@ astar_313B gcc_13B omnetpp_340B zeusmp_600B
 astar_163B astar_163B astar_163B astar_163B
 mcf_158B mcf_158B mcf_158B mcf_158B
 milc_360B milc_360B milc_360B milc_360B
-sphinx3_1339B sphinx3_1339B sphinx3_1339B sphinx3_1339B
 zeusmp_100B zeusmp_100B zeusmp_100B zeusmp_100B
 omnetpp_17B omnetpp_17B omnetpp_17B omnetpp_17B
 bwaves_1861B bwaves_1861B bwaves_1861B bwaves_1861B
