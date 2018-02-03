@@ -8,10 +8,10 @@ temp_num=${4}
 
 mkdir -p results_4core
 
-while [ "$temp_num" -le 183 ]
+while [ "$temp_num" -le 181 ]
 do
 	num=$temp_num
-	while [ "$num" -le `expr $temp_num + 8`  ] && [ "$num" -le 183 ];
+	while [ "$num" -le `expr $temp_num + 16`  ] && [ "$num" -le 181 ];
 	do
 		trace1=`sed -n ''$num'p' sim_list/4core_workloads.txt | awk '{print $1}'`
 		trace2=`sed -n ''$num'p' sim_list/4core_workloads.txt | awk '{print $2}'`

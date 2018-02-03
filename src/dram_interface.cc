@@ -135,3 +135,8 @@ float DRAM_CONTROLLER::get_latency()
     mem->getIniFloat("tCK", &latency);
     return latency;
 }
+
+void DRAM_CONTROLLER::printStats(uint8_t finalstats )
+{
+	mem->printStats(finalstats);
+}

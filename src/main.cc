@@ -105,6 +105,7 @@ void print_branch_stats()
 
 void print_dram_stats()
 {
+	(&uncore.DRAM)->printStats(true);
 }
 
 void reset_cache_stats(uint32_t cpu, CACHE *cache)
