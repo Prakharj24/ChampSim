@@ -105,6 +105,7 @@ void print_branch_stats()
 
 void print_dram_stats()
 {
+	(&uncore.DRAM)->printStats(true);
 }
 
 void reset_cache_stats(uint32_t cpu, CACHE *cache)
@@ -739,9 +740,8 @@ int main(int argc, char** argv)
                 }
 
                 // check for deadlock
-                if (ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].ip && (ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].event_cycle + DEADLOCK_CYCLE) <= current_core_cycle[i]){
+                if (ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].ip && (ooo_cpu[i].ROB.entry[ooo_cpu[i].ROB.head].event_cycle + DEADLOCK_CYCLE) <= current_core_cycle[i])
                     print_deadlock(i);
-                }
 
                 // check for warmup
                 // warmup complete

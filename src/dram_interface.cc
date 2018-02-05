@@ -68,8 +68,7 @@ int DRAM_CONTROLLER::add_rq(PACKET *packet)
     }
 
     //Call DRAMSim2
-    mem->addTransaction(false, packet->address, packet->cpu);
-    
+    mem->addTransaction(false, packet->address, packet->cpu, (packet->type==PREFETCH)? true : false);
     return index;
 }
 
@@ -91,8 +90,7 @@ int DRAM_CONTROLLER::add_wq(PACKET *packet)
     }
 
     //Call DRAMSim2
-    mem->addTransaction(true, packet->address, packet->cpu);
-    
+    mem->addTransaction(true, packet->address, packet->cpu, (packet->type==PREFETCH)? true : false);
     return index;
 }
 
@@ -136,4 +134,9 @@ float DRAM_CONTROLLER::get_latency()
     float latency;
     mem->getIniFloat("tCK", &latency);
     return latency;
+}
+
+void DRAM_CONTROLLER::printStats(uint8_t finalstats )
+{
+	mem->printStats(finalstats);
 }
