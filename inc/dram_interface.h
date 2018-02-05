@@ -14,6 +14,7 @@ class DRAM_CONTROLLER : public MEMORY {
 
     // queues
     PACKET_QUEUE WQ, RQ;
+    long long readData, writeData, readComp, writeComp;
 
     DRAM_CONTROLLER(string v1) : NAME (v1) {
         mem = DRAMSim::getMemorySystemInstance("ini/DDR3_micron_32M_8B_x8_sg15.ini", "system.ini", "./DRAMSim2", "example_app", DRAM_SIZE);
@@ -29,6 +30,10 @@ class DRAM_CONTROLLER : public MEMORY {
         RQ.NAME = "DRAM_RQ";
         RQ.SIZE = DRAM_RQ_SIZE;
         RQ.entry = new PACKET [DRAM_RQ_SIZE];
+        readData = 0;
+        writeData = 0;
+        readComp = 0;
+        writeComp = 0;
     };
 
     // destructor

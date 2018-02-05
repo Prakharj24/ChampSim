@@ -12,6 +12,7 @@ void DRAM_CONTROLLER::read_complete(unsigned id, uint64_t address, uint64_t cloc
     uint32_t op_cpu = RQ.entry[index].cpu;
     upper_level_dcache[op_cpu]->return_data(&RQ.entry[index]);
     RQ.remove_queue(&RQ.entry[index]);
+    readComp++;
 
 }
 
@@ -25,6 +26,7 @@ void DRAM_CONTROLLER::write_complete(unsigned id, uint64_t address, uint64_t clo
         abort();
 
     WQ.remove_queue(&WQ.entry[index]);
+    writeComp++;
 
 }
 
@@ -68,7 +70,8 @@ int DRAM_CONTROLLER::add_rq(PACKET *packet)
     }
 
     //Call DRAMSim2
-    mem->addTransaction(false, packet->address);
+    readData++;
+    mem->addTransaction(false, packet->address, packet->cpu, (packet->type==PREFETCH)? true : false);
     return index;
 }
 
@@ -90,7 +93,8 @@ int DRAM_CONTROLLER::add_wq(PACKET *packet)
     }
 
     //Call DRAMSim2
-    mem->addTransaction(true, packet->address);
+    writeData++;
+    mem->addTransaction(true, packet->address, packet->cpu, (packet->type==PREFETCH)? true : false);
     return index;
 }
 
@@ -139,4 +143,6 @@ float DRAM_CONTROLLER::get_latency()
 void DRAM_CONTROLLER::printStats(uint8_t finalstats )
 {
 	mem->printStats(finalstats);
+    cout << "champsim reads: " << readData << " write: " << writeData << endl;
+    cout << "champsim readsComp: " << readComp << " writeComp: " << writeComp << endl;  
 }
