@@ -11,7 +11,7 @@ debug = 1
 
 CFlags = -Wall -O3 -std=c++11
 LDFlags =
-libs = dramsim-bta
+libs = dramsim
 libDir = DRAMSim2
 
 
@@ -45,7 +45,7 @@ all: $(binDir)/$(app)
 $(binDir)/$(app): buildrepo $(objects)
 	@mkdir -p `dirname $@`
 	@echo "Linking $@..."
-	@$(CC) $(objects) -LDRAMSim2/ -ldramsim-bta $(LDFlags) -o $@
+	@$(CC) $(objects) -LDRAMSim2/ -ldramsim $(LDFlags) -o $@
 
 $(objDir)/%.o: %.$(srcExt)
 	@echo "Generating dependencies for $<..."

@@ -1,5 +1,5 @@
 TRACE_DIR=/home/prakhar/traces
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/prakhar/ChampSim/DRAMSim2/:/home/prakhar/ChampSim_base/DRAMSim2/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/prakhar/ChampSim/DRAMSim2/
 binary=${1}
 n_warm=${2}
 n_sim=${3}
