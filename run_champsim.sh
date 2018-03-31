@@ -1,4 +1,4 @@
-TRACE_DIR=/home/prakhar/ChampSim/traces
+TRACE_DIR=/home/prakhar/traces
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/DRAMSim2/
 binary=${1}
 n_warm=${2}
