@@ -3,6 +3,8 @@
   <p> ChampSim is a trace-based simulator for a microarchitecture study. You can sign up to the public mailing list by sending an empty mail to champsim+subscribe@googlegroups.com. A set of traces used for the 2nd Cache Replacement Championship (CRC-2) can be found from this link. (http://bit.ly/2t2nkUj) <p>
 </p>
 
+NOTE: Use Timing Channel branch for any work related to research in Timing Channel attacks.
+
 # Steps to integrate DRAMSim2 with ChampSim
 1. Clone the ChampSim repository.
 ```
@@ -10,7 +12,7 @@ git clone https://github.com/Prakharj24/ChampSim.git
 ```
 2. Go inside ChampSim directory and clone the DRAMSim2 repository.
 ```
-git clone -b baseline/stats https://github.com/Prakharj24/DRAMSim2.git
+git clone https://github.com/Prakharj24/DRAMSim2.git
 ```
 
 
