@@ -88,13 +88,15 @@ class CACHE : public MEMORY {
     int fill_level;
     uint32_t MAX_READ, MAX_FILL;
     uint8_t cache_type;
-
     // prefetch stats
     uint64_t pf_requested,
              pf_issued,
              pf_useful,
              pf_useless,
-             pf_fill;
+             pf_fill,
+            temp_pf_issued,
+            temp_pf_useful;
+   double  pref_accuracy;
 
     // queues
     PACKET_QUEUE WQ{NAME + "_WQ", WQ_SIZE}, // write queue
@@ -108,7 +110,9 @@ class CACHE : public MEMORY {
              sim_miss[NUM_CPUS][NUM_TYPES],
              roi_access[NUM_CPUS][NUM_TYPES],
              roi_hit[NUM_CPUS][NUM_TYPES],
-             roi_miss[NUM_CPUS][NUM_TYPES];
+             roi_miss[NUM_CPUS][NUM_TYPES],
+             last_access[NUM_CPUS];
+
     
     // constructor
     CACHE(string v1, uint32_t v2, int v3, uint32_t v4, uint32_t v5, uint32_t v6, uint32_t v7, uint32_t v8) 
@@ -129,6 +133,7 @@ class CACHE : public MEMORY {
         for (uint32_t i=0; i<NUM_CPUS; i++) {
             upper_level_icache[i] = NULL;
             upper_level_dcache[i] = NULL;
+            last_access[i] = 0;
 
             for (uint32_t j=0; j<NUM_TYPES; j++) {
                 sim_access[i][j] = 0;
@@ -152,6 +157,10 @@ class CACHE : public MEMORY {
         pf_useful = 0;
         pf_useless = 0;
         pf_fill = 0;
+        temp_pf_useful = 0;
+        temp_pf_issued = 0;
+        pref_accuracy = 0;
+
     };
 
     // destructor
@@ -165,6 +174,8 @@ class CACHE : public MEMORY {
     int  add_rq(PACKET *packet),
          add_wq(PACKET *packet),
          add_pq(PACKET *packet);
+
+    float getFracEmptySlots();
 
     void return_data(PACKET *packet),
          operate(),
@@ -198,7 +209,7 @@ class CACHE : public MEMORY {
          l2c_prefetcher_initialize(),
          prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type),
          l1d_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type),
-         l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type),
+         l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, float fracSlots, float pref_accuracy),
          prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr),
          l1d_prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr),
          l2c_prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr),

@@ -45,7 +45,6 @@ class DRAM_CONTROLLER : public MEMORY {
     int  add_rq(PACKET *packet),
          add_wq(PACKET *packet),
          add_pq(PACKET *packet);
-
     void return_data(PACKET *packet),
          operate(),
          increment_WQ_FULL(uint64_t address);
@@ -54,6 +53,7 @@ class DRAM_CONTROLLER : public MEMORY {
              get_size(uint8_t queue_type, uint64_t address);
 
     float get_latency();
+    float getFracEmptySlots();
 
     int check_dram_queue(PACKET_QUEUE *queue, PACKET *packet);
 

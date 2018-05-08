@@ -40,6 +40,7 @@ void CACHE::handle_fill()
             // COLLECT STATS
             sim_miss[fill_cpu][MSHR.entry[mshr_index].type]++;
             sim_access[fill_cpu][MSHR.entry[mshr_index].type]++;
+            //temp_access[fill_cpu][MSHR.entry[mshr_index].type]++;
 
             // check fill level
             if (MSHR.entry[mshr_index].fill_level < fill_level) {
@@ -123,6 +124,7 @@ void CACHE::handle_fill()
             // COLLECT STATS
             sim_miss[fill_cpu][MSHR.entry[mshr_index].type]++;
             sim_access[fill_cpu][MSHR.entry[mshr_index].type]++;
+            //temp_access[fill_cpu][MSHR.entry[mshr_index].type]++;
 
             fill_cache(set, way, &MSHR.entry[mshr_index]);
 
@@ -414,6 +416,13 @@ void CACHE::handle_read()
         if ((RQ.entry[RQ.head].event_cycle <= current_core_cycle[read_cpu]) && (RQ.occupancy > 0)) {
             int index = RQ.head;
 
+            if((sim_access[read_cpu][0] - last_access[read_cpu]) > 1000){
+                last_access[read_cpu] = sim_access[read_cpu][0];
+                pref_accuracy = 1.0*temp_pf_useful/temp_pf_issued;
+                temp_pf_issued = 0;
+                temp_pf_useful = 0;
+            }
+
             // access cache
             uint32_t set = get_set(RQ.entry[index].address);
             int way = check_hit(&RQ.entry[index]);
@@ -446,8 +455,10 @@ void CACHE::handle_read()
                 if (RQ.entry[index].type == LOAD) {
                     if (cache_type == IS_L1D) 
                         l1d_prefetcher_operate(block[set][way].full_addr, RQ.entry[index].ip, 1, RQ.entry[index].type);
-                    else if (cache_type == IS_L2C)
-                        l2c_prefetcher_operate(block[set][way].full_addr, RQ.entry[index].ip, 1, RQ.entry[index].type);
+                    else if (cache_type == IS_L2C){
+                        float fracEmptySlots =  0.5;//lower_level->getFracEmptySlots();
+                        l2c_prefetcher_operate(block[set][way].full_addr, RQ.entry[index].ip, 1, RQ.entry[index].type, fracEmptySlots, (float)pref_accuracy);
+                    }
                 }
 
                 // update replacement policy
@@ -461,6 +472,7 @@ void CACHE::handle_read()
                 // COLLECT STATS
                 sim_hit[read_cpu][RQ.entry[index].type]++;
                 sim_access[read_cpu][RQ.entry[index].type]++;
+                //temp_access[read_cpu][RQ.entry[index].type]++;
 
                 // check fill level
                 if (RQ.entry[index].fill_level < fill_level) {
@@ -474,6 +486,7 @@ void CACHE::handle_read()
                 // update prefetch stats and reset prefetch bit
                 if (block[set][way].prefetch) {
                     pf_useful++;
+                    temp_pf_useful++;
                     block[set][way].prefetch = 0;
                 }
                 block[set][way].used = 1;
@@ -637,8 +650,10 @@ void CACHE::handle_read()
                     if (RQ.entry[index].type == LOAD) {
                         if (cache_type == IS_L1D) 
                             l1d_prefetcher_operate(RQ.entry[index].full_addr, RQ.entry[index].ip, 0, RQ.entry[index].type);
-                        if (cache_type == IS_L2C)
-                            l2c_prefetcher_operate(RQ.entry[index].full_addr, RQ.entry[index].ip, 0, RQ.entry[index].type);
+                        if (cache_type == IS_L2C){
+                            float fracEmptySlots = 0.5;//lower_level->getFracEmptySlots();
+                            l2c_prefetcher_operate(RQ.entry[index].full_addr, RQ.entry[index].ip, 0, RQ.entry[index].type, fracEmptySlots, (float)pref_accuracy);
+                        }
                     }
 
                     MISS[RQ.entry[index].type]++;
@@ -929,6 +944,11 @@ int CACHE::invalidate_entry(uint64_t inval_addr)
     return match_way;
 }
 
+
+float CACHE::getFracEmptySlots(){
+    return lower_level->getFracEmptySlots();
+}
+
 int CACHE::add_rq(PACKET *packet)
 {
     // check for the latest wirtebacks in the write queue
@@ -1134,6 +1154,7 @@ int CACHE::prefetch_line(uint64_t ip, uint64_t base_addr, uint64_t pf_addr, int 
             add_pq(&pf_packet);
 
             pf_issued++;
+            temp_pf_issued++;
 
             return 1;
         }
@@ -1168,6 +1189,7 @@ int CACHE::kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int fill_leve
             add_pq(&pf_packet);
 
             pf_issued++;
+            temp_pf_issued++;
 
             return 1;
         }
