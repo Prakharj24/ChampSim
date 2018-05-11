@@ -525,8 +525,9 @@ void CACHE::handle_read()
                         STALL[RQ.entry[index].type]++;
                     }
                     else if (mshr_index != -1) { // already in-flight miss
-                        if(MSHR.entry[mshr_index].type == PREFETCH){
+                        if(MSHR.entry[mshr_index].prefetched == 1){
                             pf_late++;
+                            MSHR.entry[mshr_index].prefetched = 0;
                         }
                         // mark merged consumer
                         if (RQ.entry[index].type == RFO) {
@@ -1131,6 +1132,7 @@ int CACHE::prefetch_line(uint64_t ip, uint64_t base_addr, uint64_t pf_addr, int 
             pf_packet.ip = ip;
             pf_packet.type = PREFETCH;
             pf_packet.event_cycle = current_core_cycle[cpu];
+            pf_packet.prefetched = 1;
 
             // give a dummy 0 as the IP of a prefetch
             add_pq(&pf_packet);
@@ -1165,6 +1167,7 @@ int CACHE::kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int fill_leve
             pf_packet.signature = signature;
             pf_packet.confidence = confidence;
             pf_packet.event_cycle = current_core_cycle[cpu];
+            pf_packet.prefetched = 1;
 
             // give a dummy 0 as the IP of a prefetch
             add_pq(&pf_packet);
