@@ -208,7 +208,7 @@ void CACHE::l2c_prefetcher_initialize()
 /*
    Function for requesting prefetch requests. Prefetch is issued only if addr is L1 miss or prefetch hit.
 */
-void CACHE::l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type)
+void CACHE::l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, float fracSlots, float pref_accuracy)
 {
    uint64_t line_addr = addr >> LOG2_BLOCK_SIZE;
    uint64_t prefetch_issued = 0;

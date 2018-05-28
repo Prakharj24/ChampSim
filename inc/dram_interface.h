@@ -54,6 +54,7 @@ class DRAM_CONTROLLER : public MEMORY {
 
     float get_latency();
     float getFracEmptySlots();
+    float getMLP(int core);
 
     int check_dram_queue(PACKET_QUEUE *queue, PACKET *packet);
 

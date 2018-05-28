@@ -60,12 +60,12 @@ fi
 echo
 
 # Setup the DRAMSim2
-if [ ! -d "DRAMSim2/.git" ]
-then
-    git submodule update --init
-    cp DRAMSim2/system.ini.example DRAMSim2/system.ini
-fi
-make -C DRAMSim2/ libdramsim.so
+#if [ ! -d "DRAMSim2/.git" ]
+#then
+    #git submodule update --init
+    #cp DRAMSim2/system.ini.example DRAMSim2/system.ini
+#fi
+#make -C DRAMSim2/ libdramsim.so
 
 # Change prefetchers and replacement policy
 cp branch/${BRANCH}.bpred branch/branch_predictor.cc

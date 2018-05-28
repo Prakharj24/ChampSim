@@ -258,6 +258,10 @@ void CACHE::handle_writeback()
                         STALL[WQ.entry[index].type]++;
                     }
                     else if (mshr_index != -1) { // already in-flight miss
+                        if(MSHR.entry[mshr_index].prefetched == 1){
+                            pf_late++;
+                            MSHR.entry[mshr_index].prefetched = 0;
+                        }
 
                         // update fill_level
                         if (WQ.entry[index].fill_level < MSHR.entry[mshr_index].fill_level)
@@ -416,9 +420,18 @@ void CACHE::handle_read()
         if ((RQ.entry[RQ.head].event_cycle <= current_core_cycle[read_cpu]) && (RQ.occupancy > 0)) {
             int index = RQ.head;
 
+                
             if((sim_access[read_cpu][0] - last_access[read_cpu]) > 1000){
+                if(cache_type == IS_L2C)
+                cout << "--------phase--------" << endl;
+                if(temp_pf_issued)
+                    pref_accuracy_during = 1.0*temp_pf_useful/temp_pf_issued;
+                pref_accuracy_final = 0.5*pref_accuracy_during + 0.5*pref_accuracy_start;
+                if(pref_accuracy_final > 0.5)
+                    high_acc++;
+                if(pf_issued)
+                    pref_accuracy_start = 1.0*pf_useful/pf_issued;
                 last_access[read_cpu] = sim_access[read_cpu][0];
-                pref_accuracy = 1.0*temp_pf_useful/temp_pf_issued;
                 temp_pf_issued = 0;
                 temp_pf_useful = 0;
             }
@@ -456,8 +469,11 @@ void CACHE::handle_read()
                     if (cache_type == IS_L1D) 
                         l1d_prefetcher_operate(block[set][way].full_addr, RQ.entry[index].ip, 1, RQ.entry[index].type);
                     else if (cache_type == IS_L2C){
-                        float fracEmptySlots =  0.5;//lower_level->getFracEmptySlots();
-                        l2c_prefetcher_operate(block[set][way].full_addr, RQ.entry[index].ip, 1, RQ.entry[index].type, fracEmptySlots, (float)pref_accuracy);
+                        float MLP = 0;
+                         if (warmup_complete[read_cpu])
+                            MLP = lower_level->getMLP(read_cpu);
+                            //fracEmptySlots = lower_level->getFracEmptySlots();
+                        l2c_prefetcher_operate(block[set][way].full_addr, RQ.entry[index].ip, 1, RQ.entry[index].type, MLP, (float)pref_accuracy_final);
                     }
                 }
 
@@ -651,8 +667,11 @@ void CACHE::handle_read()
                         if (cache_type == IS_L1D) 
                             l1d_prefetcher_operate(RQ.entry[index].full_addr, RQ.entry[index].ip, 0, RQ.entry[index].type);
                         if (cache_type == IS_L2C){
-                            float fracEmptySlots = 0.5;//lower_level->getFracEmptySlots();
-                            l2c_prefetcher_operate(RQ.entry[index].full_addr, RQ.entry[index].ip, 0, RQ.entry[index].type, fracEmptySlots, (float)pref_accuracy);
+                            float MLP = 0;
+                             if (warmup_complete[read_cpu])
+                            MLP = lower_level->getMLP(read_cpu);
+                             //fracEmptySlots = lower_level->getFracEmptySlots();
+                            l2c_prefetcher_operate(RQ.entry[index].full_addr, RQ.entry[index].ip, 0, RQ.entry[index].type, MLP, (float)pref_accuracy_final);
                         }
                     }
 
@@ -949,6 +968,9 @@ float CACHE::getFracEmptySlots(){
     return lower_level->getFracEmptySlots();
 }
 
+float CACHE::getMLP(int core){
+    return lower_level->getMLP(core);
+}
 int CACHE::add_rq(PACKET *packet)
 {
     // check for the latest wirtebacks in the write queue

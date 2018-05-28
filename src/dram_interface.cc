@@ -144,3 +144,7 @@ void DRAM_CONTROLLER::printStats(uint8_t finalstats )
 float DRAM_CONTROLLER::getFracEmptySlots(){
     return mem->getFracEmptySlots();
 }
+
+float DRAM_CONTROLLER::getMLP(int core) {
+    return mem->getMLP(core);
+}

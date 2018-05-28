@@ -95,9 +95,13 @@ class CACHE : public MEMORY {
              pf_useless,
              pf_fill,
             temp_pf_issued,
-            temp_pf_useful;
-   double  pref_accuracy;
-
+            temp_pf_useful,
+            pf_late;
+   double  pref_accuracy_during;
+   double  pref_accuracy_start;
+   double  pref_accuracy_final;
+   int high_acc;
+   int degree_nudge;
     // queues
     PACKET_QUEUE WQ{NAME + "_WQ", WQ_SIZE}, // write queue
                  RQ{NAME + "_RQ", RQ_SIZE}, // read queue
@@ -159,7 +163,12 @@ class CACHE : public MEMORY {
         pf_fill = 0;
         temp_pf_useful = 0;
         temp_pf_issued = 0;
-        pref_accuracy = 0;
+       pref_accuracy_during = 0;
+       pref_accuracy_start = 0;
+       pref_accuracy_final = 0;
+        degree_nudge = 0;
+        pf_fill = 0;
+        high_acc = 0;
 
     };
 
@@ -176,6 +185,7 @@ class CACHE : public MEMORY {
          add_pq(PACKET *packet);
 
     float getFracEmptySlots();
+    float getMLP(int core);
 
     void return_data(PACKET *packet),
          operate(),

@@ -49,7 +49,7 @@ void CACHE::l2c_prefetcher_initialize()
         trackers[i].lru = i;
 }
 
-void CACHE::l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type)
+void CACHE::l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, float fracSlots, float pref_accuracy)
 {
     // check for a tracker hit
     uint64_t cl_addr = addr >> LOG2_BLOCK_SIZE;
@@ -110,7 +110,7 @@ void CACHE::l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit
     if (stride == trackers[index].last_stride) {
 
         // do some prefetching
-        for (int i=0; i<PREFETCH_DEGREE; i++) {
+        for (int i=0; i<PREFETCH_DEGREE ; i++) {
             uint64_t pf_address = (cl_addr + (stride*(i+1))) << LOG2_BLOCK_SIZE;
 
             // only issue a prefetch if the prefetch address is in the same 4 KB page 

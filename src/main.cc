@@ -66,6 +66,8 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
     cout << cache->NAME;
     cout << " PREFETCH  REQUESTED: " << setw(10) << cache->pf_requested << "  ISSUED: " << setw(10) << cache->pf_issued;
     cout << "  USEFUL: " << setw(10) << cache->pf_useful << "  USELESS: " << setw(10) << cache->pf_useless << endl;
+    cout << cache->NAME;
+    cout << "  LATE: " <<  setw(10)<< cache->pf_late << " HIGH INTERVALS: " << setw(10) << cache->high_acc <<  endl;
     cout << " LOAD MSHR MERGED: " << setw(10) << cache->MSHR_MERGED[0] << " " << cache->MSHR_MERGED[1]<< " " << cache->MSHR_MERGED[2]<< " " << cache->MSHR_MERGED[3]<< endl;
 }
 

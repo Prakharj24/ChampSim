@@ -224,7 +224,7 @@ void CACHE::l2c_prefetcher_initialize()
 	offset_scores_initialize();
 }
 
-void CACHE::l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type)
+void CACHE::l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, float fracSlots, float pref_accuracy)
 {
 	uint64_t line_addr = addr >> LOG2_BLOCK_SIZE;
 	int prefetches_allowed_neg=0, total_neg=0, prefetches_allowed_pos=0, total_pos=0;
