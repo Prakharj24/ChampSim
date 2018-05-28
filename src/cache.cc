@@ -258,10 +258,6 @@ void CACHE::handle_writeback()
                         STALL[WQ.entry[index].type]++;
                     }
                     else if (mshr_index != -1) { // already in-flight miss
-                        if(MSHR.entry[mshr_index].prefetched == 1){
-                            pf_late++;
-                            MSHR.entry[mshr_index].prefetched = 0;
-                        }
 
                         // update fill_level
                         if (WQ.entry[index].fill_level < MSHR.entry[mshr_index].fill_level)
@@ -554,7 +550,10 @@ void CACHE::handle_read()
                         STALL[RQ.entry[index].type]++;
                     }
                     else if (mshr_index != -1) { // already in-flight miss
-
+                        if(MSHR.entry[mshr_index].prefetched == 1){
+                            pf_late++;
+                            MSHR.entry[mshr_index].prefetched = 0;
+                        }
                         // mark merged consumer
                         if (RQ.entry[index].type == RFO) {
 
