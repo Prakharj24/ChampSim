@@ -416,22 +416,6 @@ void CACHE::handle_read()
         if ((RQ.entry[RQ.head].event_cycle <= current_core_cycle[read_cpu]) && (RQ.occupancy > 0)) {
             int index = RQ.head;
 
-                
-            if((sim_access[read_cpu][0] - last_access[read_cpu]) > 1000){
-                if(cache_type == IS_L2C)
-                cout << "--------phase--------" << endl;
-                if(temp_pf_issued)
-                    pref_accuracy_during = 1.0*temp_pf_useful/temp_pf_issued;
-                pref_accuracy_final = 0.5*pref_accuracy_during + 0.5*pref_accuracy_start;
-                if(pref_accuracy_final > 0.5)
-                    high_acc++;
-                if(pf_issued)
-                    pref_accuracy_start = 1.0*pf_useful/pf_issued;
-                last_access[read_cpu] = sim_access[read_cpu][0];
-                temp_pf_issued = 0;
-                temp_pf_useful = 0;
-            }
-
             // access cache
             uint32_t set = get_set(RQ.entry[index].address);
             int way = check_hit(&RQ.entry[index]);
@@ -469,7 +453,7 @@ void CACHE::handle_read()
                          if (warmup_complete[read_cpu])
                             MLP = lower_level->getMLP(read_cpu);
                             //fracEmptySlots = lower_level->getFracEmptySlots();
-                        l2c_prefetcher_operate(block[set][way].full_addr, RQ.entry[index].ip, 1, RQ.entry[index].type, MLP, (float)pref_accuracy_final);
+                        l2c_prefetcher_operate(block[set][way].full_addr, RQ.entry[index].ip, 1, RQ.entry[index].type, MLP, pf_accuracy_final);
                     }
                 }
 
@@ -670,7 +654,7 @@ void CACHE::handle_read()
                              if (warmup_complete[read_cpu])
                             MLP = lower_level->getMLP(read_cpu);
                              //fracEmptySlots = lower_level->getFracEmptySlots();
-                            l2c_prefetcher_operate(RQ.entry[index].full_addr, RQ.entry[index].ip, 0, RQ.entry[index].type, MLP, (float)pref_accuracy_final);
+                            l2c_prefetcher_operate(RQ.entry[index].full_addr, RQ.entry[index].ip, 0, RQ.entry[index].type, MLP, pf_accuracy_final);
                         }
                     }
 

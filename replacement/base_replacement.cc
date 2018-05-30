@@ -37,6 +37,19 @@ uint32_t CACHE::lru_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const 
     if (way == NUM_WAY) {
         for (way=0; way<NUM_WAY; way++) {
             if (block[set][way].lru == NUM_WAY-1) {
+                // a block will be evicted here, therefore update eviction counter if the block is useful i.e. demand block or not prefetched block
+                if(!block[set][way].prefetch)
+                    eviction_counter++;
+                // interval ends when half of the cache blocks are evicted
+                if(eviction_counter == 2048){
+                    pf_accuracy_start = 1.0*pf_useful/pf_issued;
+                    pf_accuracy_during = 1.0*temp_pf_useful/temp_pf_issued;
+                    pf_accuracy_final = 0.5*pf_accuracy_during + 0.5*pf_accuracy_start;
+                    temp_pf_useful = 0;
+                    temp_pf_issued = 0;
+                    pf_accuracy_during = 0;
+                    eviction_counter = 0; 
+                }
 
                 DP ( if (warmup_complete[cpu]) {
                 cout << "[" << NAME << "] " << __func__ << " instr_id: " << instr_id << " replace set: " << set << " way: " << way;

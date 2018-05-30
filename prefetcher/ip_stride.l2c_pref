@@ -49,7 +49,7 @@ void CACHE::l2c_prefetcher_initialize()
         trackers[i].lru = i;
 }
 
-void CACHE::l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, float fracSlots, float pref_accuracy)
+void CACHE::l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, float fracSlots, double pref_accuracy)
 {
     // check for a tracker hit
     uint64_t cl_addr = addr >> LOG2_BLOCK_SIZE;

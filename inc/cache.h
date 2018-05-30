@@ -97,11 +97,12 @@ class CACHE : public MEMORY {
             temp_pf_issued,
             temp_pf_useful,
             pf_late;
-   double  pref_accuracy_during;
-   double  pref_accuracy_start;
-   double  pref_accuracy_final;
+   double  pf_accuracy_during;
+   double  pf_accuracy_start;
+   double  pf_accuracy_final;
    int high_acc;
    int degree_nudge;
+   int eviction_counter;
     // queues
     PACKET_QUEUE WQ{NAME + "_WQ", WQ_SIZE}, // write queue
                  RQ{NAME + "_RQ", RQ_SIZE}, // read queue
@@ -163,12 +164,13 @@ class CACHE : public MEMORY {
         pf_fill = 0;
         temp_pf_useful = 0;
         temp_pf_issued = 0;
-       pref_accuracy_during = 0;
-       pref_accuracy_start = 0;
-       pref_accuracy_final = 0;
-        degree_nudge = 0;
+       pf_accuracy_during = 0;
+       pf_accuracy_start = 0;
+       pf_accuracy_final = 0;
+        //degree_nudge = 0;
         pf_fill = 0;
         high_acc = 0;
+        eviction_counter = 0;
 
     };
 
@@ -219,7 +221,7 @@ class CACHE : public MEMORY {
          l2c_prefetcher_initialize(),
          prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type),
          l1d_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type),
-         l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, float fracSlots, float pref_accuracy),
+         l2c_prefetcher_operate(uint64_t addr, uint64_t ip, uint8_t cache_hit, uint8_t type, float fracSlots, double pref_accuracy),
          prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr),
          l1d_prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr),
          l2c_prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr),
